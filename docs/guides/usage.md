@@ -212,11 +212,20 @@ Find your Claude Desktop config file:
 
 **Requirements**: Cursor AI editor
 
-#### Configuration File Locations
+#### Quick Setup (Alternative)
+For a simplified setup, you can use the Cursor directory:
+
+**🔗 [Add to Cursor](https://cursor.directory/mcp/context-optimizer)**
+
+This provides an automated way to configure the MCP server in Cursor. You'll still need to:
+1. Install the npm package globally: `npm install -g context-optimizer-mcp-server`
+2. Set up your environment variables (see Environment Configuration section above)
+
+#### Manual Configuration
+**Configuration File Locations:**
 - **Project scope**: `.cursor/mcp.json` in your project
 - **Global scope**: `~/.cursor/mcp.json` in your home directory
 
-#### Configuration
 Create the appropriate mcp.json file:
 
 ```json
