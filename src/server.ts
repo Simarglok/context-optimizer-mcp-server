@@ -20,6 +20,11 @@ import {
 import * as path from 'path';
 import * as fs from 'fs';
 
+// Read package.json for version information
+const packageJsonPath = path.join(__dirname, '..', 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const VERSION = packageJson.version;
+
 import { ConfigurationManager } from './config/manager';
 import { Logger } from './utils/logger';
 import { BaseMCPTool } from './tools/base';
@@ -37,7 +42,7 @@ class ContextOptimizerMCPServer {
     this.server = new Server(
       {
         name: 'context-optimizer-mcp-server',
-        version: '1.0.0',
+        version: VERSION,
         description: 'Context optimization tools for AI coding assistants - askAboutFile, runAndExtract, research tools - compatible with GitHub Copilot, Cursor AI, and other MCP-supporting assistants'
       },
       {
@@ -114,13 +119,13 @@ async function main() {
   const args = process.argv.slice(2);
   
   if (args.includes('--version') || args.includes('-v')) {
-    console.log('1.0.0');
+    console.log(VERSION);
     process.exit(0);
   }
   
   if (args.includes('--help') || args.includes('-h')) {
     console.log(`
-Context Optimizer MCP Server v1.0.0
+Context Optimizer MCP Server v${VERSION}
 Usage: context-optimizer-mcp [options]
 
 Options:
