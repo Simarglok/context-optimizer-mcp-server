@@ -6,7 +6,7 @@ A Model Context Protocol (MCP) server that provides context optimization tools f
 
 ## Overview
 
-This server provides context optimization functionality similar to the VS Code Copilot Context Optimizer extension, but with compatibility across MCP-supporting applications. It enables AI assistants to extract targeted information rather than processing large files and command outputs in their entirety.
+This server provides context optimization functionality similar to the [VS Code Copilot Context Optimizer extension](https://github.com/malaksedarous/vscode-copilot-context-optimizer), but with compatibility across MCP-supporting applications. It enables AI assistants to extract targeted information rather than processing large files and command outputs in their entirety.
 
 ## Features
 
@@ -22,17 +22,41 @@ This server provides context optimization functionality similar to the VS Code C
 
 ## Quick Start
 
+**1. Install globally:**
 ```bash
-# 1. Install globally
 npm install -g context-optimizer-mcp-server
+```
 
-# 2. Set environment variables (see docs/guides/usage.md for OS-specific instructions)
+**2. Set environment variables** (see [docs/guides/usage.md](docs/guides/usage.md) for OS-specific instructions):
+```bash
 export CONTEXT_OPT_LLM_PROVIDER="gemini"
 export CONTEXT_OPT_GEMINI_KEY="your-gemini-api-key"
+export CONTEXT_OPT_EXA_KEY="your-exa-api-key"
 export CONTEXT_OPT_ALLOWED_PATHS="/path/to/your/projects"
+```
 
-# 3. Configure your AI assistant (VS Code, Claude Desktop, etc.)
-# See docs/guides/usage.md for detailed setup instructions
+**3. Add to your MCP client configuration:**
+
+For Claude Desktop (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "context-optimizer": {
+      "command": "context-optimizer-mcp"
+    }
+  }
+}
+```
+
+For VS Code (`mcp.json`):
+```json
+{
+  "servers": {
+    "context-optimizer": {
+      "command": "context-optimizer-mcp"
+    }
+  }
+}
 ```
 
 For complete setup instructions including OS-specific environment variable configuration and AI assistant setup, see **[docs/guides/usage.md](docs/guides/usage.md)**.
@@ -111,4 +135,4 @@ Contributions are welcome! Please read **[docs/reference/contributing.md](docs/r
 MIT License - see LICENSE file for details.
 ## Related Projects
 
-- VS Code Copilot Context Optimizer – Original VS Code extension (companion project)
+- [VS Code Copilot Context Optimizer](https://github.com/malaksedarous/vscode-copilot-context-optimizer) – Original VS Code extension (companion project)
