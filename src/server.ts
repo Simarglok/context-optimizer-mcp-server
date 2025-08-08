@@ -110,6 +110,31 @@ class ContextOptimizerMCPServer {
 
 // Main entry point
 async function main() {
+  // Handle CLI arguments
+  const args = process.argv.slice(2);
+  
+  if (args.includes('--version') || args.includes('-v')) {
+    console.log('1.0.0');
+    process.exit(0);
+  }
+  
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`
+Context Optimizer MCP Server v1.0.0
+Usage: context-optimizer-mcp [options]
+
+Options:
+  --version, -v    Show version number
+  --help, -h       Show help information
+  
+This is an MCP (Model Context Protocol) server that provides context optimization tools
+for AI coding assistants. It should be configured in your AI assistant's MCP settings.
+
+For setup instructions, see: https://github.com/malaksedarous/context-optimizer-mcp-server
+`);
+    process.exit(0);
+  }
+  
   try {
     Logger.debug('Loading configuration...');
     await ConfigurationManager.loadConfiguration();

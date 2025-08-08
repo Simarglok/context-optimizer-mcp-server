@@ -4,7 +4,7 @@
   "description": "Context optimization tools MCP server for AI coding assistants - compatible with GitHub Copilot, Cursor AI, and other MCP-supporting assistants",
   "main": "dist/server.js",
   "bin": {
-    "context-optimizer-mcp": "./dist/server.js"
+    "context-optimizer-mcp": "dist/server.js"
   },
   "scripts": {
     "build": "tsc",
@@ -41,7 +41,7 @@
   "icon": "./icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/malaksedarous/context-optimizer-mcp-server.git"
+    "url": "git+https://github.com/malaksedarous/context-optimizer-mcp-server.git"
   },
   "homepage": "https://github.com/malaksedarous/context-optimizer-mcp-server#readme",
   "bugs": {
