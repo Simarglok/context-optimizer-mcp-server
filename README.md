@@ -2,7 +2,7 @@
 
 ![npm version](https://img.shields.io/npm/v/context-optimizer-mcp-server?color=blue) ![license](https://img.shields.io/badge/license-MIT-green.svg) ![node](https://img.shields.io/badge/node-%3E=18.x-informational) ![tests](https://img.shields.io/badge/tests-passing-success) 
 
-A Model Context Protocol (MCP) server that provides context optimization tools for AI coding assistants including GitHub Copilot, Cursor AI, Claude Desktop, and other MCP-compatible assistants. It enables AI assistants to extract targeted information rather than processing large files and command outputs in their entirety.
+A Model Context Protocol (MCP) server that provides context optimization tools for AI coding assistants including GitHub Copilot, Cursor AI, Claude Desktop, and other MCP-compatible assistants enabling them to extract targeted information rather than processing large terminal outputs and files wasting their context.
 
 > This server provides context optimization functionality similar to the [VS Code Copilot Context Optimizer extension](https://github.com/malaksedarous/vscode-copilot-context-optimizer), but with compatibility across MCP-supporting applications.
 
