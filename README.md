@@ -4,7 +4,35 @@
 
 A Model Context Protocol (MCP) server that provides context optimization tools for AI coding assistants including GitHub Copilot, Cursor AI, Claude Desktop, and other MCP-compatible assistants enabling them to extract targeted information rather than processing large terminal outputs and files wasting their context.
 
-> This server provides context optimization functionality similar to the [VS Code Copilot Context Optimizer extension](https://github.com/malaksedarous/vscode-copilot-context-optimizer), but with compatibility across MCP-supporting applications.
+> This MCP server is the evolution of the [VS Code Copilot Context Optimizer extension](https://github.com/malaksedarous/vscode-copilot-context-optimizer), but with compatibility across MCP-supporting applications.
+
+## 🎯 The Problem It Solves
+
+**Have you ever experienced this with your AI coding assistant (like Copilot, Claude Code, or Cursor)?**
+
+*   🔄 **Your assistant keeps compacting/summarizing conversations** and losing a bit of the context in the process.
+*   🖥️ **Terminal outputs flood the context** with hundreds of lines when the assistant only needs key information.
+*   📄 **Large files overwhelm the context** when the assistant just needs to check one specific thing.
+*   ⚠️ **"Context limit reached"** messages interrupting your workflow.
+*   🧠 **Your assistant "forgets" earlier parts** of your conversation due to context overflow.
+*   😫 **The reasoning quality drops** when you have a longer conversation.
+
+**The Root Cause**: When your assistant:
+*   Reads long logs during builds, tests, lints, etc. after executing a terminal command.
+*   Reads a large file (or multiple) in full just to answer a question when it doesn't need the whole code.
+*   Reads multiple web pages from the web to search a topic to learn how to do something.
+*   Or just during a long conversation.
+
+The assistant will either:
+
+*   Start compacting, summarizing or truncating the conversation history.
+*   Drop the quality of reasoning.
+*   Lose track of earlier context and decisions.
+*   Become less helpful as it loses focus.
+
+**The Solution**:
+
+This server provides any MCP-compatible assistant with specialized tools that extract only the specific information you need, keeping your chat context clean and focused on productive problem-solving rather than data management.
 
 ## Features
 
@@ -35,29 +63,13 @@ export CONTEXT_OPT_ALLOWED_PATHS="/path/to/your/projects"
 
 **3. Add to your MCP client configuration:**
 
-For Claude Desktop (`claude_desktop_config.json`):
+like "mcpServers" in `claude_desktop_config.json` (Claude Desktop) or  "servers" in `mcp.json` (VS Code).
 ```json
-{
-  "mcpServers": {
-    "context-optimizer": {
-      "command": "context-optimizer-mcp"
-    }
-  }
+"context-optimizer": {
+  "command": "context-optimizer-mcp"
 }
 ```
-
-For VS Code (`mcp.json`):
-```json
-{
-  "servers": {
-    "context-optimizer": {
-      "command": "context-optimizer-mcp"
-    }
-  }
-}
-```
-
-For complete setup instructions including OS-specific environment variable configuration and AI assistant setup, see **[docs/guides/usage.md](docs/guides/usage.md)**.
+For **complete setup instructions** including OS-specific environment variable configuration and AI assistant setup, see **[docs/guides/usage.md](docs/guides/usage.md)**.
 
 ## Available Tools
 
