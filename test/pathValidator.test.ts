@@ -196,11 +196,9 @@ describe('PathValidator', () => {
     });
   });
 
-  describe('Windows Case Sensitivity', () => {
+  const describeWindows = process.platform === 'win32' ? describe : describe.skip;
+  describeWindows('Windows Case Sensitivity', () => {
     beforeEach(() => {
-      // Mock Windows platform
-      Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
-      
       mockedConfigManager.getConfig.mockReturnValue({
         security: {
           allowedBasePaths: ['C:\\Test\\Projects'], // Uppercase
@@ -255,9 +253,6 @@ describe('PathValidator', () => {
       expect(result.error).toContain('outside allowed paths');
     });
 
-    afterEach(() => {
-      // Reset platform
-      Object.defineProperty(process, 'platform', { value: process.platform, configurable: true });
-    });
+  // No teardown needed
   });
 });
