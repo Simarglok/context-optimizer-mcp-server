@@ -92,6 +92,9 @@ ${fileContent}`;
   }
   
   private getApiKey(provider: string, llmConfig: any): string {
+    if (provider === 'local') {
+      return llmConfig.localLLMApiKey || 'lm-studio';
+    }
     const keyField = `${provider}Key`;
     const key = llmConfig[keyField];
     if (!key) {

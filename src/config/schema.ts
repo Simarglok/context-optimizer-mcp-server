@@ -15,11 +15,13 @@ export interface MCPServerConfig {
   
   // LLM providers
   llm: {
-    provider: 'gemini' | 'claude' | 'openai';
+    provider: 'gemini' | 'claude' | 'openai' | 'local';
     model?: string;                    // Optional custom model
     geminiKey?: string;
     claudeKey?: string;
     openaiKey?: string;
+    localLLMBaseUrl?: string;          // Base URL for OpenAI-compatible local server
+    localLLMApiKey?: string;           // API key for local server (usually not required)
   };
   
   // Research tools

@@ -27,7 +27,9 @@ export class ConfigurationManager {
         ...(process.env.CONTEXT_OPT_LLM_MODEL && { model: process.env.CONTEXT_OPT_LLM_MODEL }),
         ...(process.env.CONTEXT_OPT_GEMINI_KEY && { geminiKey: process.env.CONTEXT_OPT_GEMINI_KEY }),
         ...(process.env.CONTEXT_OPT_CLAUDE_KEY && { claudeKey: process.env.CONTEXT_OPT_CLAUDE_KEY }),
-        ...(process.env.CONTEXT_OPT_OPENAI_KEY && { openaiKey: process.env.CONTEXT_OPT_OPENAI_KEY })
+        ...(process.env.CONTEXT_OPT_OPENAI_KEY && { openaiKey: process.env.CONTEXT_OPT_OPENAI_KEY }),
+        ...(process.env.CONTEXT_OPT_LOCAL_LLM_BASE_URL && { localLLMBaseUrl: process.env.CONTEXT_OPT_LOCAL_LLM_BASE_URL }),
+        ...(process.env.CONTEXT_OPT_LOCAL_LLM_API_KEY && { localLLMApiKey: process.env.CONTEXT_OPT_LOCAL_LLM_API_KEY })
       },
       research: {
         ...(process.env.CONTEXT_OPT_EXA_KEY && { exaKey: process.env.CONTEXT_OPT_EXA_KEY })
@@ -50,18 +52,18 @@ export class ConfigurationManager {
     return config;
   }
   
-  private static getLLMProvider(): 'gemini' | 'claude' | 'openai' {
+  private static getLLMProvider(): 'gemini' | 'claude' | 'openai' | 'local' {
     const provider = process.env.CONTEXT_OPT_LLM_PROVIDER?.toLowerCase();
     
     if (!provider) {
-      throw new Error('CONTEXT_OPT_LLM_PROVIDER environment variable is required. Set to "gemini", "claude", or "openai"');
+      throw new Error('CONTEXT_OPT_LLM_PROVIDER environment variable is required. Set to "gemini", "claude", "openai", or "local"');
     }
     
-    if (!['gemini', 'claude', 'openai'].includes(provider)) {
-      throw new Error(`Invalid CONTEXT_OPT_LLM_PROVIDER: ${provider}. Must be "gemini", "claude", or "openai"`);
+    if (!['gemini', 'claude', 'openai', 'local'].includes(provider)) {
+      throw new Error(`Invalid CONTEXT_OPT_LLM_PROVIDER: ${provider}. Must be "gemini", "claude", "openai", or "local"`);
     }
     
-    return provider as 'gemini' | 'claude' | 'openai';
+    return provider as 'gemini' | 'claude' | 'openai' | 'local';
   }
   
   private static parseAllowedBasePaths(): string[] {
@@ -108,14 +110,17 @@ export class ConfigurationManager {
       throw new Error('Configuration error: llm.provider is required');
     }
     
-    const validProviders = ['gemini', 'claude', 'openai'];
+    const validProviders = ['gemini', 'claude', 'openai', 'local'];
     if (!validProviders.includes(config.llm.provider)) {
       throw new Error(`Configuration error: llm.provider must be one of: ${validProviders.join(', ')}`);
     }
     
-    const providerKey = `${config.llm.provider}Key` as keyof typeof config.llm;
-    if (!config.llm[providerKey]) {
-      throw new Error(`Configuration error: ${providerKey} is required for provider ${config.llm.provider}`);
+    // Local provider uses a base URL instead of an API key
+    if (config.llm.provider !== 'local') {
+      const providerKey = `${config.llm.provider}Key` as keyof typeof config.llm;
+      if (!config.llm[providerKey]) {
+        throw new Error(`Configuration error: ${providerKey} is required for provider ${config.llm.provider}`);
+      }
     }
     
     // Validate server configuration
@@ -157,9 +162,19 @@ export class ConfigurationManager {
   /**
    * Get configuration for a specific LLM provider
    */
-  static getLLMConfig(): { provider: string; model?: string; apiKey: string } {
+  static getLLMConfig(): { provider: string; model?: string; apiKey: string; baseURL?: string } {
     const config = this.getConfig();
     const provider = config.llm.provider;
+
+    if (provider === 'local') {
+      return {
+        provider,
+        ...(config.llm.model ? { model: config.llm.model } : {}),
+        apiKey: config.llm.localLLMApiKey || 'lm-studio',
+        baseURL: config.llm.localLLMBaseUrl || 'http://localhost:1234/v1',
+      };
+    }
+
     const keyField = `${provider}Key` as keyof typeof config.llm;
     const apiKey = config.llm[keyField] as string;
     
@@ -210,7 +225,9 @@ export class ConfigurationManager {
         model: config.llm.model,
         hasGeminiKey: !!config.llm.geminiKey,
         hasClaudeKey: !!config.llm.claudeKey,
-        hasOpenaiKey: !!config.llm.openaiKey
+        hasOpenaiKey: !!config.llm.openaiKey,
+        localLLMBaseUrl: config.llm.localLLMBaseUrl,
+        hasLocalLLMApiKey: !!config.llm.localLLMApiKey
       },
       research: {
         hasExaKey: !!config.research.exaKey

@@ -41,7 +41,7 @@ This server provides any MCP-compatible assistant with specialized tools that ex
 - **❓ Follow-up Questions Tool** (`askFollowUp`) - Continue conversations about previous terminal executions
 - **🔬 Research Tools** (`researchTopic`, `deepResearch`) - Conduct web research using Exa.ai's API
 - **🔒 Security Controls** - Path validation, command filtering, and session management
-- **🔧 Multi-LLM Support** - Works with Google Gemini, Claude (Anthropic), and OpenAI
+- **🔧 Multi-LLM Support** - Works with Google Gemini, Claude (Anthropic), OpenAI, and **local models** via LM Studio, Ollama, or any OpenAI-compatible server
 - **⚙️ Environment Variable Configuration** - API key management through system environment variables
 - **🏗️ Simple Configuration** - Environment variables only, no config files to manage
 - **🧪 Comprehensive Testing** - Unit tests, integration tests, and security validation
@@ -60,6 +60,8 @@ export CONTEXT_OPT_GEMINI_KEY="your-gemini-api-key"
 export CONTEXT_OPT_EXA_KEY="your-exa-api-key"
 export CONTEXT_OPT_ALLOWED_PATHS="/path/to/your/projects"
 ```
+
+> **Using a local model (LM Studio / Ollama)?** See the [Local LLM section](#local-llm-lm-studio--ollama) below — no API key required.
 
 **3. Add to your MCP client configuration:**
 
@@ -84,6 +86,59 @@ For **complete setup instructions** including OS-specific environment variable c
 - **`deepResearch`** - Comprehensive research and analysis using Exa.ai's exhaustive capabilities for critical decision-making and complex architectural planning. Ideal for strategic technology decisions, architecture planning, and long-term roadmap development.
 
 For detailed tool documentation and examples, see **[docs/tools.md](docs/tools.md)** and **[docs/guides/usage.md](docs/guides/usage.md)**.
+
+## Local LLM (LM Studio / Ollama)
+
+You can run the server entirely offline with any local inference tool that exposes an OpenAI-compatible HTTP API.
+
+### LM Studio
+
+1. Download and launch [LM Studio](https://lmstudio.ai) and load a model.
+2. Open the **Developer** tab → **Local Server** and click **Start Server**.  
+   Note the port shown (default is **1234**).
+3. Set environment variables:
+
+```bash
+export CONTEXT_OPT_LLM_PROVIDER="local"
+export CONTEXT_OPT_ALLOWED_PATHS="/path/to/your/projects"
+
+# The port is part of the base URL — change 1234 if you configured a different port in LM Studio:
+export CONTEXT_OPT_LOCAL_LLM_BASE_URL="http://localhost:1234/v1"
+
+# Model name: LM Studio will use whatever model is currently loaded.
+# You can leave this unset, or set it to the exact model identifier shown in LM Studio
+# (e.g. "lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF"):
+# export CONTEXT_OPT_LLM_MODEL="lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF"
+```
+
+> **Tip:** The model name passed to the API is mostly cosmetic for LM Studio — it always runs  
+> whatever model is loaded. You only need `CONTEXT_OPT_LLM_MODEL` if you want to pin a specific  
+> model or if your LM Studio version enforces name matching.
+
+### Ollama
+
+1. Install [Ollama](https://ollama.ai) and pull a model: `ollama pull llama3.2`
+2. Set environment variables:
+
+```bash
+export CONTEXT_OPT_LLM_PROVIDER="local"
+# Default Ollama port is 11434 — change if you customised OLLAMA_PORT:
+export CONTEXT_OPT_LOCAL_LLM_BASE_URL="http://localhost:11434/v1"
+# Must match the model name you pulled ("ollama list" shows available names):
+export CONTEXT_OPT_LLM_MODEL="llama3.2"
+export CONTEXT_OPT_ALLOWED_PATHS="/path/to/your/projects"
+```
+
+### Other compatible servers
+
+Any server that implements the OpenAI Chat Completions API works — just point `CONTEXT_OPT_LOCAL_LLM_BASE_URL` at it.
+
+| Variable | Default | Description |
+|---|---|---|
+| `CONTEXT_OPT_LLM_PROVIDER` | *(required)* | Set to `local` |
+| `CONTEXT_OPT_LOCAL_LLM_BASE_URL` | `http://localhost:1234/v1` | Full base URL including port (`http://host:PORT/v1`) |
+| `CONTEXT_OPT_LLM_MODEL` | `local-model` | Model identifier sent in requests (LM Studio ignores it; Ollama requires it) |
+| `CONTEXT_OPT_LOCAL_LLM_API_KEY` | `lm-studio` | API key placeholder (most local servers ignore it) |
 
 ## Documentation
 
