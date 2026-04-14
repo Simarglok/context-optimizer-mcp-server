@@ -5,6 +5,8 @@
  */
 
 import * as fs from 'fs/promises';
+import * as os from 'os';
+import * as path from 'path';
 import { MCPServerConfig } from './schema';
 import { Logger } from '../utils/logger';
 
@@ -73,7 +75,14 @@ export class ConfigurationManager {
       throw new Error('CONTEXT_OPT_ALLOWED_PATHS environment variable is required. Set to comma-separated list of allowed directories.');
     }
     
-    const paths = pathsEnv.split(',').map(p => p.trim()).filter(Boolean);
+    const expandTilde = (p: string): string => {
+      if (p === '~' || p.startsWith('~/') || p.startsWith('~\\')) {
+        return path.join(os.homedir(), p.slice(1));
+      }
+      return p;
+    };
+
+    const paths = pathsEnv.split(',').map(p => expandTilde(p.trim())).filter(Boolean);
     
     if (paths.length === 0) {
       throw new Error('CONTEXT_OPT_ALLOWED_PATHS must contain at least one valid path');
